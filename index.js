@@ -7,6 +7,29 @@
 
 var ld, rd;
 
+function regexIndexOf (str, regex, startpos) {
+    var indexOf = str.substring(startpos || 0).search(regex);
+    return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+}
+
+function regexLastIndexOf (str, regex, startpos) {
+    var result;
+    regex = (regex.global) ? regex : new RegExp(regex.source, "g" + (regex.ignoreCase ? "i" : "") + (regex.multiLine ? "m" : ""));
+    if(typeof (startpos) == "undefined") {
+        startpos = str.length;
+    } else if(startpos < 0) {
+        startpos = 0;
+    }
+    var stringToWorkWith = str.substring(0, startpos + 1);
+    var lastIndexOf = -1;
+    var nextStop = 0;
+    while((result = regex.exec(stringToWorkWith)) !== null) {
+        lastIndexOf = result.index;
+        regex.lastIndex = ++nextStop;
+    }
+    return lastIndexOf;
+}
+
 var parser = module.exports = function(content, file, conf){
 
     var o_ld = ld = conf.left_delimiter || fis.config.get('settings.smarty.left_delimiter') || fis.config.get('settings.template.left_delimiter') || '{%';
@@ -24,14 +47,16 @@ var parser = module.exports = function(content, file, conf){
     if (file.isHtmlLike) {
         content = parser.parseHtml(content, file, conf);
         if (file.extras.isPage) {
-            var reg = new RegExp(ld + 'extends\\s+'), pos;
+            var reg = new RegExp(ld + '\\s*extends\\s+'), pos;
             if(reg.test(content)){
-                pos = content.lastIndexOf(o_ld + '/block' + o_rd);
+                var endblock = new RegExp(ld + '\\s*endblock\\s*' + o_rd);
+                pos = regexLastIndexOf(content, endblock);
             } else {
-                pos = content.indexOf(o_ld + '/body' + o_rd);
+                var endbody = new RegExp(ld + '\\s*endbody\\s*' + o_rd);
+                pos = regexIndexOf(content, endbody);
             }
             if(pos > 0){
-                var insert = o_ld + "require name='" + file.id + "'" + o_rd;
+                var insert = o_ld + " require \"" + file.id + "\" " + o_rd;
                 content = content.substring(0, pos) + insert + content.substring(pos);
             }
         }
@@ -39,7 +64,7 @@ var parser = module.exports = function(content, file, conf){
         content = parser.parseJs(content, file, conf);
     }
     //
-    if (file.extras.async.length == 0) {
+    if (file.extras.async.length === 0) {
         delete file.extras.async;
         if (initial) {
             delete file.extras;
