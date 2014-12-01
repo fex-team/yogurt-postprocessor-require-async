@@ -32,8 +32,8 @@ function regexLastIndexOf (str, regex, startpos) {
 
 var parser = module.exports = function(content, file, conf){
 
-    var o_ld = ld = conf.left_delimiter || fis.config.get('settings.smarty.left_delimiter') || fis.config.get('settings.template.left_delimiter') || '{%';
-    var o_rd = rd = conf.right_delimiter || fis.config.get('settings.smarty.right_delimiter') || fis.config.get('settings.template.right_delimiter') || '%}';
+    var o_ld = ld = conf.left_delimiter || fis.config.get('settings.swig.left_delimiter') || fis.config.get('settings.template.left_delimiter') || '{%';
+    var o_rd = rd = conf.right_delimiter || fis.config.get('settings.swig.right_delimiter') || fis.config.get('settings.template.right_delimiter') || '%}';
 
     ld = pregQuote(ld);
     rd = pregQuote(rd);
