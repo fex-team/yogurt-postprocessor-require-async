@@ -1,6 +1,6 @@
 {
   "name": "yogurt-postprocessor-require-async",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "analizy the depencies marked by `require` or `require.async`",
   "main": "index.js",
   "scripts": {

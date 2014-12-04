@@ -145,7 +145,7 @@ parser.parseHtml = function parseHtml(content, file, conf){
         }
         return m;
     });
-    reg = new RegExp('('+ld+'\\s*script(?:\\s+[\\s\\S]*?["\'\\s\\w\\/]'+rd+'|\\s*'+rd+'))([\\s\\S]*?)(?='+ld+'\\s*endscript\\s*'+rd+'|$)', 'ig');
+    reg = new RegExp('('+ld+'\\s*script(?:\\s+[\\s\\S]*?'+rd+'|\\s*'+rd+'))([\\s\\S]*?)(?='+ld+'\\s*endscript\\s*'+rd+'|$)', 'ig');
     return content.replace(reg, function(m, $1, $2) {
         if($1){//<script>
             m = $1 + parser.parseJs($2, file, conf);
